@@ -84,6 +84,9 @@ export async function listFiles(
       fields: FIELDS,
       pageSize,
       orderBy: 'modifiedTime desc',
+      supportsAllDrives: 'true',
+      includeItemsFromAllDrives: 'true',
+      corpora: 'allDrives',
     }
     if (pageToken !== null) params.pageToken = pageToken
     const url = `${DRIVE_API_BASE}/files`
@@ -123,6 +126,9 @@ export async function listAllFiles(
       fields: FIELDS,
       pageSize,
       orderBy: 'modifiedTime desc',
+      supportsAllDrives: 'true',
+      includeItemsFromAllDrives: 'true',
+      corpora: 'allDrives',
     }
     if (q !== null) params.q = q
     if (pageToken !== null) params.pageToken = pageToken
@@ -139,11 +145,11 @@ export async function getFileMetadata(tm: TokenManager, fileId: string): Promise
   const url = `${DRIVE_API_BASE}/files/${fileId}`
   const fields =
     'id,name,mimeType,size,' + 'createdTime,modifiedTime,' + 'owners,capabilities/canEdit,parents'
-  return (await googleGet(tm, url, { fields })) as DriveFile
+  return (await googleGet(tm, url, { fields, supportsAllDrives: 'true' })) as DriveFile
 }
 
 export async function downloadFile(tm: TokenManager, fileId: string): Promise<Uint8Array> {
-  const url = `${DRIVE_API_BASE}/files/${fileId}?alt=media`
+  const url = `${DRIVE_API_BASE}/files/${fileId}?alt=media&supportsAllDrives=true`
   return googleGetBytes(tm, url)
 }
 
@@ -151,6 +157,6 @@ export async function* downloadFileStream(
   tm: TokenManager,
   fileId: string,
 ): AsyncIterable<Uint8Array> {
-  const url = `${DRIVE_API_BASE}/files/${fileId}?alt=media`
+  const url = `${DRIVE_API_BASE}/files/${fileId}?alt=media&supportsAllDrives=true`
   for await (const chunk of googleGetStream(tm, url)) yield chunk
 }
