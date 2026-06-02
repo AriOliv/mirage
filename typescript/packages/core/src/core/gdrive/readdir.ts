@@ -50,7 +50,7 @@ export async function readdir(
 
   let folderId: string
   if (key === '') {
-    folderId = 'root'
+    folderId = process.env.GDRIVE_ROOT_FOLDER_ID ?? 'root'
   } else {
     if (index === undefined) {
       const e = new Error(`ENOENT: ${path.original}`) as Error & { code: string }
